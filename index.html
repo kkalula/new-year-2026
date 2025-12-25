@@ -28,17 +28,27 @@ const bgCtx = bg.getContext("2d");
 const txt = document.getElementById("txt");
 const txtCtx = txt.getContext("2d");
 
-bg.width = txt.width = innerWidth;
-bg.height = txt.height = innerHeight;
+function resize() {
+  bg.width = txt.width = window.innerWidth;
+  bg.height = txt.height = window.innerHeight;
+  
+  // Reset drops untuk background
+  const newColumns = Math.floor(bg.width / (fontSize * 0.6 * text.length));
+  drops.length = newColumns;
+  drops.fill(Math.floor(Math.random() * bg.height / fontSize));
+}
+
+resize();
+window.addEventListener('resize', resize);
 
 /* ===== BACKGROUND: I LOVE YOU MATRIX KE BAWAH ===== */
 const fontSize = 18;
 const text = "iloveyou";
-const columns = Math.floor(bg.width / (fontSize * 0.6 * text.length));
-const drops = Array(columns).fill(0);
+let columns = Math.floor(window.innerWidth / (fontSize * 0.6 * text.length));
+let drops = Array(columns).fill(0).map(() => Math.floor(Math.random() * window.innerHeight / fontSize));
 
 function drawBg() {
-  bgCtx.fillStyle = "rgba(0,0,0,0.12)";
+  bgCtx.fillStyle = "rgba(0,0,0,0.15)";
   bgCtx.fillRect(0, 0, bg.width, bg.height);
 
   bgCtx.fillStyle = "#ff69b4";
@@ -50,7 +60,7 @@ function drawBg() {
 
     bgCtx.fillText(text, x, y);
 
-    if (y > bg.height && Math.random() > 0.97) {
+    if (y > bg.height && Math.random() > 0.975) {
       drops[i] = 0;
     }
     drops[i]++;
@@ -59,13 +69,14 @@ function drawBg() {
 setInterval(drawBg, 40);
 
 /* ===== DOT MATRIX TEXT TENGAH ===== */
+const isMobile = window.innerWidth < 768;
 const words = [
-  { t: "YOU", s: 220 },
-  { t: "ARE", s: 220 },
-  { t: "MY", s: 170 },
-  { t: "BEST FRIEND", s: 150 },
-  { t: "EVER", s: 170 },
-  { t: "♥ HAPPY NEW YEAR ♥", s: 100 }
+  { t: "YOU", s: isMobile ? 120 : 220 },
+  { t: "ARE", s: isMobile ? 120 : 220 },
+  { t: "MY", s: isMobile ? 100 : 170 },
+  { t: "BEST FRIEND", s: isMobile ? 70 : 150 },
+  { t: "EVER", s: isMobile ? 100 : 170 },
+  { t: "♥ HAPPY NEW YEAR ♥", s: isMobile ? 60 : 100 }
 ];
 
 let idx = 0;
